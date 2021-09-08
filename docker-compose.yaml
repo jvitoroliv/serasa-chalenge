@@ -1,0 +1,8 @@
+version: '3'
+services:
+  serasa:
+    build: .
+    image: "jvitoroliv/serasa:1.0"
+    network_mode: host
+
+
