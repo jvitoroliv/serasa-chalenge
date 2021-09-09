@@ -1,0 +1,89 @@
+# Ansible playbook AWS - para configuração da instancia
+---
+- name: "AWS - Install docker"
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update all packages
+      yum:
+        name: '*'
+        state: latest
+        update_only: yes
+
+    - name: Ensure a list of yum packages are installed
+      yum:
+        name: "{{ packages }}"
+        state: latest
+        update_cache: yes
+      vars:
+        packages:
+        - python-pip
+        - yum-utils
+        - device-mapper-persistent-data
+        - lvm2
+        - amazon-linux-extras
+
+    - name: Add extras repository
+      shell: yum-config-manager --enable extras
+
+    - name: Enable Some packages from amazon-linux-extras packages
+      shell: "amazon-linux-extras enable python3.8 ansible2 docker"
+
+    - name: clean yum metadata cache
+      command: yum clean metadata
+      args:
+        warn: false
+
+    - name: Ensure a list of yum packages are installed
+      yum:
+        name: "{{ packages }}"
+        state: latest
+        update_cache: yes
+      vars:
+        packages:
+        - python3.8
+        - ansible
+        - docker
+
+    - name: Enable Docker CE service at startup
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Upgrade pip3
+      shell: "python3.8 -m pip install pip --upgrade"
+
+    - name: Ensure Python pip packages are installed
+      pip:
+        name: "{{ packages }}"
+        executable: /usr/local/bin/pip3.8
+      vars:
+        packages:
+        - boto
+        - boto3
+        - docker-compose
+
+    - name: Download go app
+      copy: src=main.go dest=/home/ec2-user
+
+    - name: Download Dockerfile to instance
+      copy: src=Dockerfile dest=/home/ec2-user
+      
+    - name: Add ec2-user in docker group part 2
+      shell: "sudo usermod -aG docker $USER"
+
+    - name: Adapting the environment to the docker part 1
+      shell: "sudo curl -L https://github.com/docker/compose/releases/download/1.21.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose" 
+    
+    - name: Adapting the environment to the docker part 2
+      shell: "sudo chmod +x /usr/local/bin/docker-compose"
+
+    - name: Adapting the environment to the docker part 3
+      shell: "sudo chown $USER /var/run/docker.sock"
+    
+    - name: Run docker build
+      shell: "docker build -t serasa:1.0 ."
+
+    - name: Run docker run
+      shell: "docker run --network host -d -p 8080:8080 serasa:1.0"
