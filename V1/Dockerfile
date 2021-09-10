@@ -1,11 +1,10 @@
-FROM golang
+FROM golang:alpine
 
-WORKDIR /go/src/app
-
-ADD . .
+WORKDIR /app
+COPY . /app
 
 ENV GO111MODULE=auto
 
-RUN go build -o /webapp
+RUN go build -o main .
 
-CMD [ "/webapp" ]
+CMD ["/app/main"]

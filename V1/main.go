@@ -20,5 +20,5 @@ func main() {
 		fmt.Fprintf(w, "Hey! You win "+strconv.Itoa(points)+" "+m)
 	})
 
-	http.ListenAndServe("127.0.0.1:8080", nil)
+	http.ListenAndServe(":3000", nil)
 }

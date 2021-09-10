@@ -16,7 +16,7 @@ variable "env" {
 
 variable "ami" {
   description = "AWS AMI que será usada "
-  default = "ami-0443305dabd4be2bc"
+  default = "ami-00dfe2c7ce89a450b"
 }
 
 variable "instance_type" {

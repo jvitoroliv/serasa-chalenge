@@ -70,20 +70,23 @@
     - name: Download Dockerfile to instance
       copy: src=Dockerfile dest=/home/ec2-user
       
-    - name: Add ec2-user in docker group part 2
-      shell: "sudo usermod -aG docker $USER"
+    - name: Add ec2-user in docker group
+      shell: "sudo usermod -a -G docker $USER"
 
-    - name: Adapting the environment to the docker part 1
-      shell: "sudo curl -L https://github.com/docker/compose/releases/download/1.21.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose" 
-    
-    - name: Adapting the environment to the docker part 2
-      shell: "sudo chmod +x /usr/local/bin/docker-compose"
-
-    - name: Adapting the environment to the docker part 3
+    - name: Adapting the environment to the docker
       shell: "sudo chown $USER /var/run/docker.sock"
     
-    - name: Run docker build
+    - name: Run docker build aplication go
       shell: "docker build -t serasa:1.0 ."
 
-    - name: Run docker run
-      shell: "docker run --network host -d -p 8080:8080 serasa:1.0"
+    - name: Run docker run aplication go
+      shell: "docker run -d -p 3000:3000 serasa:1.0"
+
+    - name: Download nginx
+      copy: src=nginx/ dest=/home/ec2-user/nginx
+
+    - name: Run docker build nginx
+      shell: "docker build -t nginx:1.0 nginx/"
+
+    - name: Run docker run nginx
+      shell: "docker run -p 80:80 -d nginx:1.0"
