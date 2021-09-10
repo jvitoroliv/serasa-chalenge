@@ -53,11 +53,11 @@ A modificação das outras variáveis são opicionais, porém sempre é interess
 6. Após a construção o terraform irá indicar um output com o ip elastico publico da máquina criada na aws, execute o comando ssh -i local/arquivo_key.pem ec2-user@Ip_exibido_pelo_terraform
 Lembrando que ec2-user é o usuário padrão da AMI utilizada, caso utilize outra será necessário realizar alguns ajustes nos arquivos .tf e .yaml
 
-7. dentro da máquina execute o comando curl http://localhost:8080 para validar a subida e execução da aplicação main.go
+7. Abra o navegador e digite http://ip_publico_da_instancia (o mesmo do output do terrafotm) para validar a subida e execução da aplicação main.go
 
-Obs: Até o momento hoveram problemas na exposição da aplicação por isso o passo 7 para a internet e o controle de versão ainda não foi implementado.
+Obs: Até o momento não foi implementado o controle de versão ainda não foi implementado.
 
-Considerações finais: Para features futuras, além da correção das dependencias, algumas possíbilidades são adicionar as automações em esteira CI/CD no git lab para facilitar todo o processo.
+Considerações finais: Para features futuras, além da correção das dependencias (controle de versão), existem algumas possíbilidades, como por exemplo adicionar as automações em esteira CI/CD no git lab para facilitar todo o processo.
 
 Atte.,
 
